@@ -1,0 +1,163 @@
+{
+  "name": "Assignment Submission and Deadline Remainder",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -208,
+        -208
+      ],
+      "id": "4d50b224-ffda-4176-814f-91ff845804f3",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1BqksmLdYjnNLWcCDr0dFISWdT2AAfxO8Gh1VXRGcrPg",
+          "mode": "list",
+          "cachedResultName": "Assignment Submission and Deadline Remainder",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BqksmLdYjnNLWcCDr0dFISWdT2AAfxO8Gh1VXRGcrPg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BqksmLdYjnNLWcCDr0dFISWdT2AAfxO8Gh1VXRGcrPg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        112,
+        -208
+      ],
+      "id": "5a17ab41-aa5e-4647-a404-16e4b0d0fb48",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "x0O0lPeXBuR83sHG",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "4c0aaa2e-480e-4197-8957-63f3d3369b8e",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "pending",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        432,
+        -160
+      ],
+      "id": "8ae4fc44-92d8-47a3-ac40-407d264ae41a",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Assignment Submission and Deadline Remainder",
+        "message": "=Hello {{ $json[\"student name\"] }},  This is a reminder that your assignment \"{{ $json[\"assignment name\"] }}\" is pending.  Subject: {{ $json[\"assignment name\"] }} Deadline: {{ $json.deadline }} Status: {{ $json.status }}  Please submit your assignment before the deadline.  Regards, Assignment Reminder Bot",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        -160
+      ],
+      "id": "468c9e95-e6c8-4b37-99d1-e1ccbf341f4d",
+      "name": "Send a message1",
+      "webhookId": "218012b7-f449-464f-b566-b43fe9bf6389",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "3ZiEIMQs2hFEWytV",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3c6cab79-ec7b-458f-b8cd-29914ef1b0ac",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aa5463e8693d09ea865e0b83d893595006edcccb27c843506a26530410c0cedf"
+  },
+  "nodeGroups": [],
+  "id": "CUzLYJmOJDQTiPjv",
+  "tags": []
+}
